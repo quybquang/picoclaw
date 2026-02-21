@@ -272,6 +272,7 @@ Discutez avec votre PicoClaw via Telegram, Discord, DingTalk, LINE ou WeCom
 | **DingTalk** | Moyen (identifiants de l'application)  |
 | **LINE**     | Moyen (identifiants + URL de webhook)  |
 | **WeCom**    | Moyen (CorpID + configuration webhook) |
+| **Signal**   | Moyen (démon bridge autonome)          |
 
 <details>
 <summary><b>Telegram</b> (Recommandé)</summary>
@@ -549,6 +550,56 @@ picoclaw gateway
 ```
 
 > **Note** : WeCom App nécessite l'ouverture du port 18792 pour les callbacks webhook. Utilisez un proxy inverse pour HTTPS en production.
+
+</details>
+
+<details>
+<summary><b>Signal</b> (Sécurité Maximale)</summary>
+
+PicoClaw prend en charge Signal via un démon bridge autonome natif pour une confidentialité et une sécurité maximales.
+
+**1. Compiler le Signal Bridge**
+
+Consultez les [instructions de picoclaw-signal-bridge](contrib/picoclaw-signal-bridge/README.md) pour compiler le démon, ou exécutez simplement :
+```bash
+make build-signal
+```
+
+**2. Lier votre Appareil**
+
+```bash
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --link --data-dir ~/.picoclaw/signal
+```
+
+**3. Configurer PicoClaw**
+
+```json
+{
+  "channels": {
+    "signal": {
+      "enabled": true,
+      "bridge_url": "unix:///tmp/picoclaw-signal.sock",
+      "allow_from": ["+1234567890"]
+    }
+  }
+}
+```
+
+> **Astuce UX :** Le bridge extrait automatiquement les numéros de téléphone E164, vous permettant de les configurer facilement dans `allow_from` au lieu de gérer des UUID complexes.
+
+**4. Lancer**
+
+Démarrez à la fois le bridge et PicoClaw :
+
+```bash
+# Terminal 1 : Exécuter le bridge
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --data-dir ~/.picoclaw/signal --socket /tmp/picoclaw-signal.sock
+
+# Terminal 2 : Exécuter PicoClaw
+picoclaw gateway
+```
 
 </details>
 

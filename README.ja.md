@@ -236,6 +236,7 @@ Telegram、Discord、QQ、DingTalk、LINE、WeCom で PicoClaw と会話でき�
 | **DingTalk** | 普通（アプリ認証情報） |
 | **LINE** | 普通（認証情報 + Webhook URL） |
 | **WeCom** | 普通（CorpID + Webhook設定） |
+| **Signal** | 普通（独立した bridge デーモン） |
 
 <details>
 <summary><b>Telegram</b>（推奨）</summary>
@@ -509,6 +510,56 @@ picoclaw gateway
 ```
 
 > **注意**: WeCom App は Webhook コールバック用にポート 18792 を開放する必要があります。本番環境では HTTPS 用のリバースプロキシを使用してください。
+
+</details>
+
+<details>
+<summary><b>Signal</b>（最高水準のセキュリティ）</summary>
+
+PicoClaw は、ネイティブの独立した bridge デーモンを通じて Signal をサポートし、最大限のプライバシーとセキュリティを確保します。
+
+**1. Signal Bridge のビルド**
+
+ビルドの詳細については [picoclaw-signal-bridge の手順](contrib/picoclaw-signal-bridge/README.md) を参照するか、以下を実行してください：
+```bash
+make build-signal
+```
+
+**2. デバイスのリンク**
+
+```bash
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --link --data-dir ~/.picoclaw/signal
+```
+
+**3. PicoClaw の設定**
+
+```json
+{
+  "channels": {
+    "signal": {
+      "enabled": true,
+      "bridge_url": "unix:///tmp/picoclaw-signal.sock",
+      "allow_from": ["+1234567890"]
+    }
+  }
+}
+```
+
+> **UX のヒント:** ブリッジは自動的に E164 電話番号を抽出するため、複雑な UUID ではなく、電話番号を 直接 `allow_from` に設定できます。
+
+**4. 実行**
+
+bridge と PicoClaw の両方を起動します：
+
+```bash
+# Terminal 1: bridge を実行
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --data-dir ~/.picoclaw/signal --socket /tmp/picoclaw-signal.sock
+
+# Terminal 2: PicoClaw を実行
+picoclaw gateway
+```
 
 </details>
 

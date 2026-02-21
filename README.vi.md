@@ -253,6 +253,7 @@ Trò chuyện với PicoClaw qua Telegram, Discord, DingTalk, LINE hoặc WeCom.
 | **DingTalk** | Trung bình (app credentials) |
 | **LINE** | Trung bình (credentials + webhook URL) |
 | **WeCom** | Trung bình (CorpID + cấu hình webhook) |
+| **Signal** | Trung bình (standalone bridge daemon) |
 
 <details>
 <summary><b>Telegram</b> (Khuyên dùng)</summary>
@@ -530,6 +531,56 @@ picoclaw gateway
 ```
 
 > **Lưu ý**: WeCom App yêu cầu mở cổng 18792 cho callback webhook. Sử dụng proxy ngược cho HTTPS trong môi trường sản xuất.
+
+</details>
+
+<details>
+<summary><b>Signal</b> (Bảo mật tối đa)</summary>
+
+PicoClaw hỗ trợ Signal thông qua một trình nền (daemon) bridge độc lập, giúp tối đa hoá sự riêng tư và bảo mật.
+
+**1. Biên dịch (Build) Signal Bridge**
+
+Xem [hướng dẫn picoclaw-signal-bridge](contrib/picoclaw-signal-bridge/README.md) để build daemon, hoặc đơn giản chạy lệnh:
+```bash
+make build-signal
+```
+
+**2. Liên kết Thiết bị**
+
+```bash
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --link --data-dir ~/.picoclaw/signal
+```
+
+**3. Cấu hình PicoClaw**
+
+```json
+{
+  "channels": {
+    "signal": {
+      "enabled": true,
+      "bridge_url": "unix:///tmp/picoclaw-signal.sock",
+      "allow_from": ["+1234567890"]
+    }
+  }
+}
+```
+
+> **Mẹo UX:** Bridge tự động trích xuất số điện thoại định dạng chuẩn (E164), cho phép bạn dễ dàng cấp quyền bằng số điện thoại trong `allow_from` thay vì phải xử lý các chuỗi UUID phức tạp.
+
+**4. Khởi động**
+
+Khởi động đồng thời cả bridge và mạng PicoClaw:
+
+```bash
+# Terminal 1: Chạy bridge
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --data-dir ~/.picoclaw/signal --socket /tmp/picoclaw-signal.sock
+
+# Terminal 2: Chạy PicoClaw
+picoclaw gateway
+```
 
 </details>
 

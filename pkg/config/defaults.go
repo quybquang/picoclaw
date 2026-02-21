@@ -113,6 +113,11 @@ func DefaultConfig() *Config {
 				AllowFrom:      FlexibleStringSlice{},
 				ReplyTimeout:   5,
 			},
+			Signal: SignalConfig{
+				Enabled:   false,
+				BridgeURL: "unix:///tmp/picoclaw-signal.sock",
+				AllowFrom: FlexibleStringSlice{},
+			},
 		},
 		Providers: ProvidersConfig{
 			OpenAI: OpenAIProviderConfig{WebSearch: true},

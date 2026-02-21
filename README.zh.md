@@ -282,6 +282,7 @@ picoclaw agent -m "2+2 等于几？"
 | **QQ** | 简单 (AppID + AppSecret) |
 | **钉钉 (DingTalk)** | 中等 (应用凭证) |
 | **企业微信 (WeCom)** | 中等 (企业ID + Webhook配置) |
+| **Signal** | 中等 (独立的 bridge 进程) |
 
 <details>
 <summary><b>Telegram</b> (推荐)</summary>
@@ -518,6 +519,56 @@ picoclaw gateway
 ```
 
 > **注意**: 自建应用需要开放 18792 端口用于接收 Webhook 回调。生产环境建议使用反向代理配置 HTTPS。
+
+</details>
+
+<details>
+<summary><b>Signal</b> (极致安全)</summary>
+
+PicoClaw 通过一个原生的独立 bridge 守护进程支持 Signal，最大程度保证隐私与安全。
+
+**1. 编译 (Build) Signal Bridge**
+
+查看 [picoclaw-signal-bridge 指南](contrib/picoclaw-signal-bridge/README.md) 获取编译详情，或者直接运行：
+```bash
+make build-signal
+```
+
+**2. 链接您的设备**
+
+```bash
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --link --data-dir ~/.picoclaw/signal
+```
+
+**3. 配置 PicoClaw**
+
+```json
+{
+  "channels": {
+    "signal": {
+      "enabled": true,
+      "bridge_url": "unix:///tmp/picoclaw-signal.sock",
+      "allow_from": ["+1234567890"]
+    }
+  }
+}
+```
+
+> **UX 提示：** 该 bridge 会自动提取标准的 E164 电话号码，允许您直接在 `allow_from` 中配置电话号码，而无需处理复杂的 UUID！
+
+**4. 运行**
+
+同时启动 bridge 和 PicoClaw：
+
+```bash
+# 终端 1: 运行 bridge
+cd contrib/picoclaw-signal-bridge
+./picoclaw-signal-bridge --data-dir ~/.picoclaw/signal --socket /tmp/picoclaw-signal.sock
+
+# 终端 2: 运行 PicoClaw
+picoclaw gateway
+```
 
 </details>
 

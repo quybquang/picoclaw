@@ -1,0 +1,6 @@
+picoclaw-signal-bridge
+lib/libsignal_ffi.a
+lib/signal_ffi.h
+*.db
+*.db-journal
+*.db-wal

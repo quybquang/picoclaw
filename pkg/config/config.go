@@ -192,12 +192,19 @@ type ChannelsConfig struct {
 	OneBot   OneBotConfig   `json:"onebot"`
 	WeCom    WeComConfig    `json:"wecom"`
 	WeComApp WeComAppConfig `json:"wecom_app"`
+	Signal   SignalConfig   `json:"signal"`
 }
 
 type WhatsAppConfig struct {
 	Enabled   bool                `json:"enabled" env:"PICOCLAW_CHANNELS_WHATSAPP_ENABLED"`
 	BridgeURL string              `json:"bridge_url" env:"PICOCLAW_CHANNELS_WHATSAPP_BRIDGE_URL"`
 	AllowFrom FlexibleStringSlice `json:"allow_from" env:"PICOCLAW_CHANNELS_WHATSAPP_ALLOW_FROM"`
+}
+
+type SignalConfig struct {
+	Enabled   bool                `json:"enabled" env:"PICOCLAW_CHANNELS_SIGNAL_ENABLED"`
+	BridgeURL string              `json:"bridge_url" env:"PICOCLAW_CHANNELS_SIGNAL_BRIDGE_URL"`
+	AllowFrom FlexibleStringSlice `json:"allow_from" env:"PICOCLAW_CHANNELS_SIGNAL_ALLOW_FROM"`
 }
 
 type TelegramConfig struct {

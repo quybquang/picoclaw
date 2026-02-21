@@ -1,0 +1,10 @@
+                    GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+This bridge program links libsignal_ffi.a (AGPL-3.0) and imports
+mautrix-signal (AGPL-3.0), therefore it is licensed under AGPL-3.0.
+
+PicoClaw itself (the main binary) remains MIT-licensed.
+Communication happens over Unix socket IPC (process boundary).
+
+See: https://www.gnu.org/licenses/agpl-3.0.html
